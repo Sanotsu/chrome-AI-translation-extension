@@ -1,0 +1,115 @@
+.ai-translator-popup {
+  position: absolute;
+  z-index: 10000;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  max-width: 300px;
+  display: none;
+  backdrop-filter: blur(5px);
+  color: #333;
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .ai-translator-popup {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+}
+
+.ai-translator-content {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ai-translator-loading {
+  color: inherit;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.ai-translation {
+  color: #666;
+  margin-left: 4px;
+}
+
+.translate-button {
+  position: absolute;
+  z-index: 10000;
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  backdrop-filter: blur(5px);
+  transition: background-color 0.2s;
+}
+
+.translate-button:hover {
+  background: rgba(69, 160, 73, 0.95);
+}
+
+.translator-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 256px;
+  min-height: 300px;
+  max-height: 80vh;
+  height: fit-content;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 10000;
+  display: none;
+}
+
+.panel-container {
+  padding: 15px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.ai-translation-container {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--theme-color, #4CAF50);
+  opacity: 0.9;
+  color: inherit;
+}
+
+.language-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.arrow {
+  color: #666;
+  margin: 0 8px;
+}
+
+.ai-translation-inline {
+  color: inherit;
+  opacity: 0.8;
+  margin-left: 4px;
+  font-size: 0.95em;
+}
+
+/* 只有当内容超过最大高度时才显示滚动条 */
+@media (max-height: 500px) {
+  .translator-panel {
+    overflow-y: auto;
+  }
+}
+ 

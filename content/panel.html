@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AI 网页翻译</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <div class="panel-container">
+    <div class="panel-header">
+      <h2 class="panel-title">AI 网页翻译</h2>
+      <a href="#" id="openOptions" class="settings-link">设置</a>
+    </div>
+    <div class="language-section">
+      <div class="language-info">
+        <span>原文语言: <span id="sourceLanguage">检测中...</span></span>
+        <span class="arrow">→</span>
+        <div class="target-language">
+          <span>目标语言:</span>
+          <div class="language-select-container">
+            <select id="targetLang">
+              <option value="custom">自定义语言...</option>
+            </select>
+            <input type="text" id="customLang" placeholder="输入目标语言代码" style="display: none;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="action-section">
+      <div class="button-group">
+        <button id="translatePage">对比翻译</button>
+        <button id="replaceTranslate">替换翻译</button>
+      </div>
+      <div class="cache-controls">
+        <button id="clearCompareCache" class="secondary-button">清除对比翻译缓存</button>
+        <button id="clearReplaceCache" class="secondary-button">清除替换翻译缓存</button>
+      </div>
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+      <div class="progress-text">0%</div>
+    </div>
+  </div>
+  <script type="module" src="panel.js"></script>
+</body>
+</html> 
