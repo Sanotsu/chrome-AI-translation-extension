@@ -1,28 +1,61 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>AI 翻译助手设置</title>
-  <link rel="stylesheet" href="options.css">
-</head>
-<body>
-  <div class="container">
-    <h1>AI 翻译助手设置</h1>
-    <div class="form-group">
-      <label for="apiEndpoint">API 接口地址:</label>
-      <input type="text" id="apiEndpoint" placeholder="例如: https://api.openai.com/v1/chat/completions" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI 翻译助手设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>AI 翻译助手设置</h1>
+      <div class="form-group">
+        <label for="apiEndpoint">API 接口地址:</label>
+        <input
+          type="text"
+          id="apiEndpoint"
+          placeholder="例如: https://api.openai.com/v1/chat/completions"
+        />
+      </div>
+      <div class="form-group">
+        <label for="apiKey">API 密钥:</label>
+        <div class="input-group">
+          <input type="password" id="apiKey" />
+          <button id="toggleApiKey" class="toggle-btn">
+            <span class="eye-icon">👁️</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="model">模型名称:</label>
+        <input type="text" id="model" placeholder="例如: gpt-3.5-turbo" />
+      </div>
+
+      <div class="form-group">
+        <label>System Prompts 设置:</label>
+        <div class="prompt-selector">
+          <select id="promptType">
+            <option value="selection">划词翻译</option>
+            <option value="window">小窗翻译</option>
+            <option value="page">整页翻译</option>
+          </select>
+        </div>
+        <div class="prompt-editor">
+          <div class="prompt-tips">
+            <p>提示：在提示词中使用 {LANG} 来表示目标语言，例如：</p>
+            <p class="example">
+              你是一个翻译助手。请将用户输入的文本翻译成{LANG}，保持原文的格式和风格。只返回翻译结果，不需要解释。
+            </p>
+          </div>
+          <textarea
+            id="promptContent"
+            placeholder="请输入system prompt"
+          ></textarea>
+        </div>
+      </div>
+
+      <button id="save">保存设置</button>
+      <div id="status"></div>
     </div>
-    <div class="form-group">
-      <label for="apiKey">API 密钥:</label>
-      <input type="password" id="apiKey" />
-    </div>
-    <div class="form-group">
-      <label for="model">模型名称:</label>
-      <input type="text" id="model" placeholder="例如: gpt-3.5-turbo" />
-    </div>
-    <button id="save">保存设置</button>
-    <div id="status"></div>
-  </div>
-  <script src="options.js"></script>
-</body>
-</html> 
+    <script src="options.js"></script>
+  </body>
+</html>

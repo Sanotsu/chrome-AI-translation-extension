@@ -14,14 +14,15 @@ label {
   margin-bottom: 5px;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -36,4 +37,100 @@ button:hover {
 #status {
   margin-top: 10px;
   padding: 10px;
-} 
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.input-group input {
+  flex: 1;
+}
+
+.toggle-btn {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #f5f5f5;
+  border-color: #999;
+}
+
+.eye-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.prompt-selector {
+  margin-bottom: 15px;
+}
+
+.prompt-selector select {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.prompt-selector select:focus {
+  border-color: #4a8af4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 138, 244, 0.1);
+}
+
+.prompt-editor {
+  margin-top: 10px;
+}
+
+.prompt-tips {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.prompt-tips p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.prompt-tips .example {
+  font-family: monospace;
+  background-color: #fff;
+  padding: 8px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  color: #333;
+}
+
+#promptContent {
+  width: 100%;
+  min-height: 150px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#promptContent:focus {
+  border-color: #4a8af4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 138, 244, 0.1);
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI 极简翻译-小窗模式</title>
+    <link rel="stylesheet" href="translate.css" />
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="translate-container">
+        <div class="source-text">
+          <h3>原文 <span class="edit-hint">(可编辑)</span></h3>
+          <textarea
+            id="sourceContent"
+            class="content"
+            placeholder="在此输入或粘贴要翻译的文本"
+          ></textarea>
+        </div>
+        <div class="translation-controls">
+          <div class="language-select">
+            <label for="targetLang">目标语言:</label>
+            <select id="targetLang"></select>
+          </div>
+          <button id="translateBtn">重新翻译</button>
+        </div>
+        <div class="translated-text">
+          <h3>译文</h3>
+          <div id="translatedContent" class="content">
+            <div class="loading" style="display: none">翻译中...</div>
+            <div class="result"></div>
+          </div>
+        </div>
+      </div>
+      <div class="history-container">
+        <div class="history-toggle">
+          <button id="toggleHistory" class="toggle-btn">
+            <span class="toggle-icon">▶</span>
+          </button>
+        </div>
+        <div class="history-content">
+          <div class="history-header">
+            <h3>历史记录</h3>
+            <button id="clearHistory" class="clear-btn">清除全部</button>
+          </div>
+          <div class="history-list" id="historyList">
+            <!-- 历史记录项会动态插入到这里 -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 初始化必要的对象 -->
+    <!-- <script>
+    // 创建全局对象，供模块使用
+    window.CacheManager = null; 
+    window.translationService = null;
+  </script> -->
+
+    <!-- 先加载依赖服务 -->
+    <script src="../content/cache-manager.js"></script>
+    <script src="../content/translation-service.js"></script>
+
+    <!-- 在服务加载后初始化 -->
+    <!-- <script>
+    // 确保服务被正确初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof TranslationService === 'function' && !window.translationService) {
+        window.translationService = new TranslationService();
+        console.log('翻译服务已初始化');
+      }
+    });
+  </script> -->
+
+    <!-- 最后加载主脚本 -->
+    <script type="module" src="translate.js"></script>
+  </body>
+</html>

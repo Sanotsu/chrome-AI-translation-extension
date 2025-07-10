@@ -1,9 +1,15 @@
 {
   "manifest_version": 3,
   "name": "AI 极简翻译助手",
-  "version": "1.0",
+  "version": "1.0.20250710",
   "description": "使用在线服务大模型的 API 进行智能网页翻译",
-  "permissions": ["storage", "activeTab", "scripting", "contextMenus", "tabs"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "tabs"
+  ],
   "action": {
     "default_icon": {
       "16": "icons/icon.png",
@@ -17,27 +23,42 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content/cache-manager.js", "content/content.js"],
-      "css": ["content/content.css"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/cache-manager.js",
+        "content/translation-service.js",
+        "content/selection-translator.js",
+        "content/content.js"
+      ],
+      "css": [
+        "content/content.css"
+      ]
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
-        "content/panel.html",
-        "content/panel.css",
-        "content/panel.js",
         "content/languages.js",
-        "translate/translate.html",
-        "translate/translate.css",
-        "translate/translate.js",
+        "content/translation-service.js",
+        "content/selection-translator.js",
+        "isolated-translate/translate.html",
+        "isolated-translate/translate.css",
+        "isolated-translate/translate.js",
         "options/options.html",
         "options/options.css",
-        "options/options.js"
+        "options/options.js",
+        "panel/panel.html",
+        "panel/panel.css",
+        "panel/panel.js"
       ],
-      "matches": ["<all_urls>"]
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
-  "host_permissions": ["https://api.siliconflow.cn/*"]
+  "host_permissions": [
+    "https://api.siliconflow.cn/*"
+  ]
 }
