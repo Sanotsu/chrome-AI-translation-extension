@@ -3,7 +3,7 @@ import {
   getBrowserLanguage,
   formatLanguageDisplay,
   isValidLanguageCode,
-} from "../content/languages.js";
+} from "../web-accessible-utils/language-utils.js";
 
 let targetLang = "zh-CN";
 let currentTabId = null;
@@ -33,6 +33,46 @@ document.addEventListener("DOMContentLoaded", async () => {
   progressBar.parentElement.style.borderRadius = "4px";
   progressBar.parentElement.style.height = "20px";
   progressBar.parentElement.style.margin = "10px 0";
+
+  // 验证自定义语言输入
+  const validateCustomLang = () => {
+    if (targetLangSelect.value === "custom") {
+      const value = customLangInput.value.trim();
+      if (!value || !isValidLanguageCode(value)) {
+        customLangInput.classList.add("invalid");
+        return false;
+      } else {
+        customLangInput.classList.remove("invalid");
+        return true;
+      }
+    }
+    return true;
+  };
+
+  // 显示语言验证错误消息
+  const showLangValidationError = () => {
+    const messageElement = document.createElement("div");
+    messageElement.className = "lang-validation-error";
+    messageElement.style.color = "#f44336";
+    messageElement.style.fontSize = "12px";
+    messageElement.style.marginTop = "5px";
+    messageElement.textContent = "请输入有效的语言代码";
+
+    // 检查是否已有错误消息
+    const existingError = document.querySelector(".lang-validation-error");
+    if (existingError) {
+      existingError.remove();
+    }
+
+    customLangInput.parentElement.appendChild(messageElement);
+
+    // 3秒后自动移除消息
+    setTimeout(() => {
+      if (messageElement.parentElement) {
+        messageElement.remove();
+      }
+    }, 3000);
+  };
 
   // 填充语言选项
   const fillLanguageOptions = () => {
@@ -100,6 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 监听自定义语言输入
   customLangInput.addEventListener("input", (e) => {
     const value = e.target.value.trim();
+
     if (isValidLanguageCode(value)) {
       targetLang = value;
       customLangInput.classList.remove("invalid");
@@ -285,6 +326,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 流式对比翻译按钮事件
   streamTranslateButton.addEventListener("click", () => {
     if (streamTranslateButton.textContent.trim() === "流式对比翻译") {
+      // 验证自定义语言
+      if (!validateCustomLang()) {
+        showLangValidationError();
+        return;
+      }
+
       streamTranslateButton.textContent = "停止翻译";
       streamTranslateButton.classList.add("stop-translate");
       streamTranslateButton.disabled = false;
@@ -294,8 +341,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       // 重置进度条
       progressBar.style.width = "0%";
       progressText.textContent = "0%";
-
-      console.log("开始流式对比翻译");
 
       chrome.tabs
         .sendMessage(currentTabId, {
@@ -331,13 +376,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         action: "restoreOriginal",
       });
     } else {
-      console.log("【流式对比翻译按钮文字异常】", streamTranslateButton.textContent)
+      console.log(
+        "【流式对比翻译按钮文字异常】",
+        streamTranslateButton.textContent
+      );
     }
   });
 
   // 流式替换翻译按钮事件
   streamReplaceButton.addEventListener("click", () => {
     if (streamReplaceButton.textContent.trim() === "流式替换翻译") {
+      // 验证自定义语言
+      if (!validateCustomLang()) {
+        showLangValidationError();
+        return;
+      }
+
       streamReplaceButton.textContent = "停止翻译";
       streamReplaceButton.classList.add("stop-translate");
       streamReplaceButton.disabled = false;
@@ -382,7 +436,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         action: "restoreOriginal",
       });
     } else {
-      console.log("【流式替换翻译按钮文字异常】", streamReplaceButton.textContent)
+      console.log(
+        "【流式替换翻译按钮文字异常】",
+        streamReplaceButton.textContent
+      );
     }
   });
 

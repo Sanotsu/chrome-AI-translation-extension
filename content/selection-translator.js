@@ -95,91 +95,68 @@ async function handleMouseUp(event) {
       // 先检查缓存
       // 2025-07-10 划词翻译是否应该考虑不使用缓存，每次都是重新查询？？？
       const url = window.location.href;
-    //   const cachedTranslation = await CacheManager.getCache(
-    //     url,
-    //     selectedText,
-    //     targetLang,
-    //     "selection"
-    //   );
+      //   const cachedTranslation = await CacheManager.getCache(
+      //     url,
+      //     selectedText,
+      //     targetLang,
+      //     "selection"
+      //   );
 
-    //   // 如果有缓存，直接使用
-    //   if (cachedTranslation) {
-    //     console.log("使用缓存的翻译结果");
-    //     loadingElement.style.display = "none"; // 隐藏加载提示
-    //     textElement.textContent = cachedTranslation.translation;
-    //     isTranslating = false;
-    //     return;
-    //   }
+      //   // 如果有缓存，直接使用
+      //   if (cachedTranslation) {
+      //     console.log("使用缓存的翻译结果");
+      //     loadingElement.style.display = "none"; // 隐藏加载提示
+      //     textElement.textContent = cachedTranslation.translation;
+      //     isTranslating = false;
+      //     return;
+      //   }
 
       console.log("开始调用翻译API...");
       console.log("translationService可用:", !!translationService);
 
       // 使用TranslationService进行翻译
-      const response = await translationService.translateWithAPI(
+      const response = await translationService.streamingSingleTranslate(
         selectedText,
         targetLang,
         "selection"
       );
 
-      // 处理流式响应
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let translatedText = "";
-
       // 收到第一个响应就隐藏加载提示
       let firstChunk = true;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      let translatedText = "";
 
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
-
-        for (const line of lines) {
-          if (!line.trim() || line.includes("[DONE]")) continue;
-
-          if (line.startsWith("data: ")) {
-            try {
-              const jsonStr = line.slice(6).trim();
-              if (!jsonStr || jsonStr === "[DONE]") continue;
-
-              const json = JSON.parse(jsonStr);
-              if (json.choices?.[0]?.delta?.content) {
-                // 收到第一个内容时隐藏加载提示
-                if (firstChunk) {
-                  loadingElement.style.display = "none";
-                  firstChunk = false;
-                }
-
-                const content = json.choices[0].delta.content;
-                translatedText += content;
-                textElement.textContent = translatedText;
-              }
-            } catch (e) {
-              console.error("解析流式响应出错:", e, line);
-            }
+      // 使用通用的流式响应处理方法
+      translatedText = await translationService.handleSingleTranslationResponse(
+        response,
+        (partialText) => {
+          // 收到第一个内容时隐藏加载提示
+          if (firstChunk) {
+            loadingElement.style.display = "none";
+            firstChunk = false;
           }
+          // 更新翻译内容
+          textElement.textContent = partialText;
         }
-      }
+      );
 
       // 确保加载提示被隐藏
       loadingElement.style.display = "none";
 
-      // 缓存翻译结果
-      if (translatedText) {
-        await CacheManager.setCache(
-          url,
-          selectedText,
-          translatedText,
-          targetLang,
-          "selection"
-        );
-      }
+      // // 缓存翻译结果
+      // if (translatedText) {
+      //   await CacheManager.setCache(
+      //     url,
+      //     selectedText,
+      //     translatedText,
+      //     targetLang,
+      //     "selection"
+      //   );
+      // }
     } catch (error) {
       loadingElement.style.display = "none";
       textElement.textContent = "翻译请求失败，请重试";
-      console.error("翻译错误:", error);
+      console.error("划词翻译错误:", error);
     } finally {
       isTranslating = false;
     }

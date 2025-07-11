@@ -340,3 +340,19 @@ textarea.content:focus {
     color: #ff6b6b;
   }
 }
+
+/* 添加自定义语言输入框的样式 */
+.custom-lang {
+  margin-top: 5px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.custom-lang.invalid {
+  border-color: #f44336;
+  background-color: rgba(244, 67, 54, 0.05);
+}

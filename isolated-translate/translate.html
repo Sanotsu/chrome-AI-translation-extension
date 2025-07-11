@@ -20,6 +20,12 @@
           <div class="language-select">
             <label for="targetLang">目标语言:</label>
             <select id="targetLang"></select>
+            <input
+              type="text"
+              id="customLang"
+              class="custom-lang"
+              style="display: none"
+            />
           </div>
           <button id="translateBtn">重新翻译</button>
         </div>
@@ -49,27 +55,8 @@
       </div>
     </div>
 
-    <!-- 初始化必要的对象 -->
-    <!-- <script>
-    // 创建全局对象，供模块使用
-    window.CacheManager = null; 
-    window.translationService = null;
-  </script> -->
-
     <!-- 先加载依赖服务 -->
-    <script src="../content/cache-manager.js"></script>
-    <script src="../content/translation-service.js"></script>
-
-    <!-- 在服务加载后初始化 -->
-    <!-- <script>
-    // 确保服务被正确初始化
-    document.addEventListener('DOMContentLoaded', () => {
-      if (typeof TranslationService === 'function' && !window.translationService) {
-        window.translationService = new TranslationService();
-        console.log('翻译服务已初始化');
-      }
-    });
-  </script> -->
+    <script src="../content/utils/translation-service.js"></script>
 
     <!-- 最后加载主脚本 -->
     <script type="module" src="translate.js"></script>

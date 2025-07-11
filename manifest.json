@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI 极简翻译助手",
-  "version": "1.0.20250710",
+  "version": "1.0.20250711",
   "description": "使用在线服务大模型的 API 进行智能网页翻译",
   "permissions": [
     "storage",
@@ -27,10 +27,13 @@
         "<all_urls>"
       ],
       "js": [
-        "content/cache-manager.js",
-        "content/translation-service.js",
+        "content/content.js",
+        "content/page-translator.js",
         "content/selection-translator.js",
-        "content/content.js"
+        "content/utils/languages.js",
+        "content/utils/cache-manager.js",
+        "content/utils/dom-processor.js",
+        "content/utils/translation-service.js"
       ],
       "css": [
         "content/content.css"
@@ -40,9 +43,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "content/languages.js",
-        "content/translation-service.js",
-        "content/selection-translator.js",
+        "web-accessible-utils/language-utils.js",
         "isolated-translate/translate.html",
         "isolated-translate/translate.css",
         "isolated-translate/translate.js",

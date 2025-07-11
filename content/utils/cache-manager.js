@@ -1,11 +1,12 @@
-// 缓存管理器
+// 整页翻译的缓存管理器
+// 其他的缓存(比如小窗翻译)没用这个
 const CacheManager = {
   // 缓存有效期（1小时）
   CACHE_DURATION: 3600000,
 
   // 初始化缓存
   async init() {
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     if (!result.translationCache) {
       await chrome.storage.local.set({ translationCache: {} });
     } else {
@@ -16,7 +17,7 @@ const CacheManager = {
 
   // 清理过期缓存
   async cleanExpiredCache() {
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     const translationCache = result.translationCache;
     let hasExpired = false;
 
@@ -47,7 +48,7 @@ const CacheManager = {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(16);
@@ -56,7 +57,7 @@ const CacheManager = {
   // 获取缓存
   async getCache(url, text, targetLang, type) {
     const cacheKey = this.generateCacheKey(url, text, targetLang, type);
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     const cache = result.translationCache[cacheKey];
 
     if (!cache) {
@@ -78,7 +79,7 @@ const CacheManager = {
   // 设置缓存
   async setCache(url, text, translation, targetLang, type) {
     const cacheKey = this.generateCacheKey(url, text, targetLang, type);
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     const translationCache = result.translationCache || {};
 
     translationCache[cacheKey] = {
@@ -87,7 +88,7 @@ const CacheManager = {
       translation,
       targetLang,
       type,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     await chrome.storage.local.set({ translationCache });
@@ -96,7 +97,7 @@ const CacheManager = {
 
   // 移除缓存
   async removeCache(cacheKey) {
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     const translationCache = result.translationCache;
     if (translationCache && translationCache[cacheKey]) {
       delete translationCache[cacheKey];
@@ -106,7 +107,7 @@ const CacheManager = {
 
   // 清除特定网页和目标语言的缓存
   async clearTypeCache(url, targetLang, type) {
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     const translationCache = result.translationCache;
     let hasCache = false;
 
@@ -129,23 +130,24 @@ const CacheManager = {
 
   // 检查特定网页和目标语言是否有缓存
   async hasCache(url, targetLang, type) {
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     const translationCache = result.translationCache;
-    
+
     if (!translationCache) return false;
 
     const prefix = `${url}_${targetLang}_${type}_`;
     const now = Date.now();
 
-    return Object.keys(translationCache).some(key => 
-      key.startsWith(prefix) && 
-      now - translationCache[key].timestamp <= this.CACHE_DURATION
+    return Object.keys(translationCache).some(
+      (key) =>
+        key.startsWith(prefix) &&
+        now - translationCache[key].timestamp <= this.CACHE_DURATION
     );
   },
 
   // 获取页面的所有缓存翻译
   async getPageCache(url, targetLang, type) {
-    const result = await chrome.storage.local.get('translationCache');
+    const result = await chrome.storage.local.get("translationCache");
     const translationCache = result.translationCache;
     const pageCache = {};
 
@@ -154,16 +156,18 @@ const CacheManager = {
       const now = Date.now();
 
       for (const [key, cache] of Object.entries(translationCache)) {
-        if (key.startsWith(prefix) && 
-            now - cache.timestamp <= this.CACHE_DURATION) {
+        if (
+          key.startsWith(prefix) &&
+          now - cache.timestamp <= this.CACHE_DURATION
+        ) {
           pageCache[cache.text] = cache.translation;
         }
       }
     }
 
     return pageCache;
-  }
+  },
 };
 
 // 初始化缓存管理器
-CacheManager.init(); 
+CacheManager.init();

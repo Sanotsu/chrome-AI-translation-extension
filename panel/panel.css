@@ -1,5 +1,5 @@
 .panel-container {
-  padding: 12px;
+  padding: 5px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
 }
@@ -12,7 +12,7 @@
 }
 
 .language-section {
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 label {
@@ -31,7 +31,7 @@ select {
 }
 
 .action-section {
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 button {
@@ -43,7 +43,7 @@ button {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  /* margin-bottom: 15px; */
+  /* margin-bottom: 5px; */
 }
 
 button:hover {
@@ -85,7 +85,7 @@ button:disabled {
 }
 
 #targetLang {
-  width: 200px;
+  width: 100%;
   padding: 6px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -94,7 +94,7 @@ button:disabled {
 }
 
 #customLang {
-  width: 192px;
+  width: calc(100% - 14px);
   padding: 6px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -134,7 +134,7 @@ button:disabled {
 .button-group {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
   flex-wrap: wrap;
 }
 
@@ -236,7 +236,7 @@ button.stop-translate:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 .panel-title {
@@ -276,7 +276,9 @@ button.stop-translate:hover {
 /* 缓存清除消息样式 */
 .cache-clear-message {
   position: absolute;
-  bottom: -30px;
+  /* bottom: -30px; */
+  /* 在最底部显示 */
+  bottom: 0px;
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.7);

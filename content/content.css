@@ -55,12 +55,13 @@
   background: rgba(69, 160, 73, 0.95);
 }
 
+/* 选项按钮弹窗样式 */
 .translator-panel {
   position: fixed;
   top: 20px;
   right: 20px;
   width: 256px;
-  min-height: 300px;
+  min-height: 256px;
   max-height: 80vh;
   height: fit-content;
   background: white;

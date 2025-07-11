@@ -3,7 +3,7 @@ import {
   getBrowserLanguage,
   formatLanguageDisplay,
   isValidLanguageCode,
-} from "../content/languages.js";
+} from "../web-accessible-utils/language-utils.js";
 
 let currentText = "";
 // 不在模块顶层初始化translationService，而是在DOMContentLoaded中获取
@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sourceContent = document.getElementById("sourceContent");
   const translatedContent = document.getElementById("translatedContent");
   const targetLangSelect = document.getElementById("targetLang");
+  const customLangInput = document.getElementById("customLang");
   const translateBtn = document.getElementById("translateBtn");
   const historyList = document.getElementById("historyList");
   const clearHistoryBtn = document.getElementById("clearHistory");
@@ -143,18 +144,58 @@ document.addEventListener("DOMContentLoaded", async () => {
       othersGroup.appendChild(option);
     });
     targetLangSelect.appendChild(othersGroup);
+
+    // 添加自定义语言选项
+    const customOption = document.createElement("option");
+    customOption.value = "custom";
+    customOption.textContent = "自定义语言(ISO 639格式)";
+    targetLangSelect.appendChild(customOption);
   };
 
   fillLanguageOptions();
 
   // 获取存储的目标语言
   chrome.storage.local.get({ translateWindow_targetLang: "zh-CN" }, (items) => {
-    targetLangSelect.value = items.translateWindow_targetLang;
+    const savedLang = items.translateWindow_targetLang;
+    if (
+      Object.keys({ ...LANGUAGES.common, ...LANGUAGES.others }).includes(
+        savedLang
+      )
+    ) {
+      targetLangSelect.value = savedLang;
+    } else {
+      targetLangSelect.value = "custom";
+      customLangInput.style.display = "block";
+      customLangInput.value = savedLang;
+    }
   });
+
+  // 监听自定义语言输入
+  customLangInput.addEventListener("input", (e) => {
+    const value = e.target.value.trim();
+    if (isValidLanguageCode(value)) {
+      customLangInput.classList.remove("invalid");
+      chrome.storage.local.set({ translateWindow_targetLang: value });
+    } else {
+      customLangInput.classList.add("invalid");
+    }
+  });
+
+  // 添加自定义语言输入提示
+  customLangInput.placeholder = "输入语言代码 (如: en, zh-CN, ja)";
+  customLangInput.title = "请输入符合 ISO 639-1 或 ISO 639-2 标准的语言代码";
 
   // 监听语言选择变化
   targetLangSelect.addEventListener("change", (e) => {
-    chrome.storage.local.set({ translateWindow_targetLang: e.target.value });
+    if (e.target.value === "custom") {
+      customLangInput.style.display = "block";
+      chrome.storage.local.set({
+        translateWindow_targetLang: customLangInput.value.trim(),
+      });
+    } else {
+      customLangInput.style.display = "none";
+      chrome.storage.local.set({ translateWindow_targetLang: e.target.value });
+    }
   });
 
   // 监听文本输入
@@ -222,7 +263,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     result.textContent = "";
 
     try {
-      const currentTargetLang = targetLangSelect.value;
+      // 获取当前选择的目标语言
+      let currentTargetLang = targetLangSelect.value;
+      if (currentTargetLang === "custom") {
+        currentTargetLang = customLangInput.value.trim();
+        if (!isValidLanguageCode(currentTargetLang)) {
+          loading.style.display = "none";
+          result.textContent = "请输入有效的语言代码";
+          return;
+        }
+      }
 
       // 获取翻译服务实例
       const translationService = getTranslationService();
@@ -230,51 +280,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("translationService可用:", !!translationService);
 
       // 使用TranslationService进行翻译
-      const response = await translationService.translateWithAPI(
+      const response = await translationService.streamingSingleTranslate(
         currentText,
         currentTargetLang,
         "window"
       );
 
-      // 处理流式响应
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let translatedText = "";
       // 收到第一个响应就隐藏加载提示
       let firstChunk = true;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
-
-        for (const line of lines) {
-          if (!line.trim() || line.includes("[DONE]")) continue;
-
-          if (line.startsWith("data: ")) {
-            try {
-              const jsonStr = line.slice(6).trim();
-              if (!jsonStr || jsonStr === "[DONE]") continue;
-
-              const json = JSON.parse(jsonStr);
-              if (json.choices?.[0]?.delta?.content) {
-                // 收到第一个内容时隐藏加载提示
-                if (firstChunk) {
-                  loading.style.display = "none";
-                  firstChunk = false;
-                }
-                const content = json.choices[0].delta.content;
-                translatedText += content;
-                result.textContent = translatedText;
-              }
-            } catch (e) {
-              console.log("解析流式响应出错:", e, line);
+      // 使用通用的流式响应处理方法
+      const translatedText =
+        await translationService.handleSingleTranslationResponse(
+          response,
+          (partialText) => {
+            // 收到第一个内容时隐藏加载提示
+            if (firstChunk) {
+              loading.style.display = "none";
+              firstChunk = false;
             }
+            // 更新翻译内容
+            result.textContent = partialText;
           }
-        }
-      }
+        );
 
       loading.style.display = "none";
 
@@ -288,7 +316,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       loading.style.display = "none";
       result.textContent = "翻译失败，请重试: " + error.message;
-      console.error("翻译错误:", error);
+      console.error("小窗翻译错误:", error);
       console.error("详细错误信息:", error.message);
     }
   });
