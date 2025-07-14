@@ -1,4 +1,8 @@
-// 划词翻译功能
+// *********************************/
+// 基础划词翻译功能
+// 选中文本后展示快速翻译按钮，直接在原网页插入显示一个弹窗，流式追加显示翻译结果，点击空白即关闭
+// *********************************/
+
 // 全局变量，用于保存按钮和弹窗引用
 let translateButton = null;
 let popup = null;
@@ -167,7 +171,7 @@ async function handleMouseUp(event) {
 function createTranslateButton() {
   const button = document.createElement("button");
   button.className = "translate-button";
-  button.textContent = "翻译";
+  button.textContent = "快速翻译";
   return button;
 }
 
@@ -219,7 +223,7 @@ function positionPopup(element, rect) {
     left = window.scrollX + viewportWidth - elementWidth - 10;
   }
 
-  element.style.top = `${top}px`;
+  element.style.top = `${top + 30}px`;
   element.style.left = `${left}px`;
 }
 

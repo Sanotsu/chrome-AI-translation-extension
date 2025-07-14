@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI高级翻译</title>
+    <link rel="stylesheet" href="advanced-translate.css" />
+    <script src="advanced-translate.js" defer></script>
+  </head>
+  <body>
+    <div class="advanced-translate-container">
+      <header>
+        <h1>AI高级翻译</h1>
+        <div class="header-actions">
+          <button id="clearContent" class="secondary-button">清空内容</button>
+          <button id="openVocabulary" class="secondary-button">
+            打开单词本
+          </button>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <div class="translation-section">
+          <div class="original-text-container">
+            <h3>原文</h3>
+            <div id="originalText" class="text-content"></div>
+          </div>
+          <div class="translated-text-container">
+            <h3>翻译结果</h3>
+            <div id="translatedText" class="text-content"></div>
+          </div>
+        </div>
+
+        <div class="words-section" id="wordsSection" style="display: none">
+          <h3>单词解析</h3>
+          <div id="wordsList" class="words-list"></div>
+        </div>
+
+        <div class="loading-section" id="loadingSection" style="display: none">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">翻译中...</div>
+        </div>
+
+        <div class="error-section" id="errorSection" style="display: none">
+          <div class="error-message" id="errorMessage"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -6,7 +6,8 @@
 }
 
 .form-group {
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
+  margin-bottom: 1px;
 }
 
 label {
@@ -16,7 +17,8 @@ label {
 
 input,
 select {
-  width: 100%;
+  /* width: 100%; */
+  width: 97%;
   padding: 8px;
   margin-bottom: 10px;
 }
@@ -77,7 +79,7 @@ button:hover {
 }
 
 .prompt-selector select {
-  width: 200px;
+  width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -118,8 +120,9 @@ button:hover {
 }
 
 #promptContent {
-  width: 100%;
-  min-height: 150px;
+  /* width: 100%; */
+  width: 96%;
+  min-height: 100px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;

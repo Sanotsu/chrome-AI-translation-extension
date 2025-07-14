@@ -46,6 +46,15 @@ button {
   /* margin-bottom: 5px; */
 }
 
+/* 打开单词本按钮样式 */
+.tool-button {
+  width: 60px;
+  padding: 2px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+}
+
 button:hover {
   background-color: #45a049;
 }

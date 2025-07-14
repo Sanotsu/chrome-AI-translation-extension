@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI极简翻译助手 - 单词本</title>
+    <link rel="stylesheet" href="vocabulary.css" />
+    <script src="vocabulary.js" defer></script>
+  </head>
+  <body>
+    <div class="vocabulary-container">
+      <header>
+        <h1>单词本</h1>
+        <div class="header-actions">
+          <input type="text" id="searchInput" placeholder="搜索单词..." />
+          <button id="clearAll" class="danger-button">清空单词本</button>
+        </div>
+      </header>
+
+      <div class="vocabulary-stats">
+        <div class="stat-item">
+          <span class="stat-label">收藏单词:</span>
+          <span class="stat-value" id="wordCount">0</span>
+        </div>
+      </div>
+
+      <div class="vocabulary-list" id="vocabularyList">
+        <!-- 单词列表将在JS中动态填充 -->
+        <div class="empty-message" id="emptyMessage">
+          还没有收藏单词，请在网页中使用高级划词翻译功能添加单词
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -5,6 +5,15 @@ import {
   isValidLanguageCode,
 } from "../web-accessible-utils/language-utils.js";
 
+// *********************************/
+// 面板脚本
+// 点击插件图标后，展示功能面板
+// 面板中包含流式对比/替换翻译按钮，可以手动停止翻译
+// 包含清除缓存按钮，可以清除缓存
+// 包含设置按钮，可以打开设置页面
+// 包含单词本按钮，可以打开单词本页面
+// *********************************/
+
 let targetLang = "zh-CN";
 let currentTabId = null;
 
@@ -516,6 +525,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
     chrome.runtime.openOptionsPage();
   });
+
+  // 单词本按钮
+  const openVocabularyBtn = document.getElementById("openVocabulary");
+  if (openVocabularyBtn) {
+    openVocabularyBtn.addEventListener("click", () => {
+      chrome.runtime.sendMessage({ action: "openVocabularyPage" });
+    });
+  }
 });
 
 // 监听标签页关闭事件，清理存储
