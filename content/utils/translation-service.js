@@ -53,6 +53,7 @@ class TranslationService {
               "你是一个翻译助手。请将用户输入的文本翻译成{LANG}，保持原文的格式和风格。只返回翻译结果，不需要解释。",
             page: "你是一个翻译助手。请将用户输入的文本翻译成{LANG}，保持原文的格式和风格。翻译时要考虑上下文的连贯性。只返回翻译结果，不需要解释。",
           },
+          customParamsByType: { selection: [], advancedSelection: [], window: [], page: [] },
         },
         (items) => {
           resolve(items);
@@ -248,6 +249,14 @@ class TranslationService {
       throw new Error("未配置翻译提示词");
     }
 
+    // 合并自定义参数
+    const extraParams = {};
+    for (const p of (settings.customParamsByType?.[type] || [])) {
+      if (!p.name) continue;
+      try { extraParams[p.name] = JSON.parse(p.value); }
+      catch (_) { extraParams[p.name] = p.value; }
+    }
+
     // 构建请求选项
     const requestOptions = {
       method: "POST",
@@ -269,6 +278,7 @@ class TranslationService {
         ],
         temperature: 0.3,
         stream: true,
+        ...extraParams,
       }),
     };
 

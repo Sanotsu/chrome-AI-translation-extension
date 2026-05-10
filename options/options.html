@@ -31,7 +31,7 @@
       </div>
 
       <div class="form-group">
-        <label>System Prompts 设置:</label>
+        <label>Model config 设置:</label>
         <div class="prompt-selector">
           <select id="promptType">
             <option value="selection">快速划词翻译</option>
@@ -53,6 +53,15 @@
             id="promptContent"
             placeholder="请输入system prompt"
           ></textarea>
+          <div class="collapsible-header" id="customParamsToggle">
+            <span class="collapse-arrow">▶</span>
+            <span>自定义请求参数（可选）</span>
+          </div>
+          <div class="collapsible-body" id="customParamsBody" style="display:none">
+            <p class="param-tips">参数值支持字符串或 JSON 格式，将与标准参数合并后发送。</p>
+            <div id="customParamsList"></div>
+            <button id="addParam" class="add-param-btn">+ 添加参数</button>
+          </div>
         </div>
       </div>
 

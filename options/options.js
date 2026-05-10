@@ -39,6 +39,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // 当前提示词配置
   let prompts = { ...defaultPrompts };
 
+  // 自定义参数（每种翻译模式独立）
+  const DEFAULT_CUSTOM_PARAMS = { selection: [], advancedSelection: [], window: [], page: [] };
+  let customParamsByType = { ...DEFAULT_CUSTOM_PARAMS };
+  let prevType = promptType.value; // 记录上一个类型，用于切换时正确保存
+
+  const customParamsToggle = document.getElementById("customParamsToggle");
+  const customParamsBody = document.getElementById("customParamsBody");
+  const customParamsList = document.getElementById("customParamsList");
+  const addParamBtn = document.getElementById("addParam");
+
+  function escapeHtml(str) {
+    return (str || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  }
+
+  function renderCustomParams() {
+    const type = promptType.value;
+    const params = customParamsByType[type] || [];
+    customParamsList.innerHTML = "";
+    params.forEach((p, i) => {
+      const row = document.createElement("div");
+      row.className = "param-row";
+      row.innerHTML =
+        `<input class="param-name" placeholder="参数名称" value="${escapeHtml(p.name)}" />` +
+        `<input class="param-value" placeholder="参数值（字符串或 JSON）" value="${escapeHtml(p.value)}" />` +
+        `<button class="delete-param-btn" data-index="${i}">×</button>`;
+      customParamsList.appendChild(row);
+    });
+    const hasParams = params.length > 0;
+    customParamsBody.style.display = hasParams ? "block" : "none";
+    customParamsToggle.querySelector(".collapse-arrow").textContent = hasParams ? "▼" : "▶";
+  }
+
+  function saveCurrentParamsToMemory(type) {
+    const rows = customParamsList.querySelectorAll(".param-row");
+    customParamsByType[type] = Array.from(rows)
+      .map(row => ({
+        name: row.querySelector(".param-name").value.trim(),
+        value: row.querySelector(".param-value").value.trim(),
+      }))
+      .filter(p => p.name !== "");
+  }
+
   // 加载保存的设置
   chrome.storage.sync.get(
     {
@@ -46,6 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
       apiKey: DEFAULT_API_KEY,
       model: DEFAULT_MODEL,
       prompts: defaultPrompts,
+      customParamsByType: DEFAULT_CUSTOM_PARAMS,
     },
     (items) => {
       apiEndpoint.value = items.apiEndpoint;
@@ -53,19 +96,48 @@ document.addEventListener("DOMContentLoaded", () => {
       model.value = items.model;
       prompts = { ...defaultPrompts, ...items.prompts };
       promptContent.value = prompts[promptType.value];
+      customParamsByType = { ...DEFAULT_CUSTOM_PARAMS, ...items.customParamsByType };
+      renderCustomParams();
     }
   );
 
+  // 折叠/展开
+  customParamsToggle.addEventListener("click", () => {
+    const isOpen = customParamsBody.style.display !== "none";
+    customParamsBody.style.display = isOpen ? "none" : "block";
+    customParamsToggle.querySelector(".collapse-arrow").textContent = isOpen ? "▶" : "▼";
+  });
+
+  // 添加参数行
+  addParamBtn.addEventListener("click", () => {
+    const type = promptType.value;
+    customParamsByType[type] = customParamsByType[type] || [];
+    customParamsByType[type].push({ name: "", value: "" });
+    renderCustomParams();
+  });
+
+  // 删除参数行
+  customParamsList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-param-btn")) {
+      const type = promptType.value;
+      customParamsByType[type].splice(Number(e.target.dataset.index), 1);
+      renderCustomParams();
+    }
+  });
+
   // 切换提示词类型
   promptType.addEventListener("change", () => {
+    saveCurrentParamsToMemory(prevType); // 把 DOM 数据存入切换前的类型
+    prevType = promptType.value;
     promptContent.value =
       prompts[promptType.value] || defaultPrompts[promptType.value];
+    renderCustomParams();
   });
 
   // 保存设置
   saveButton.addEventListener("click", () => {
-    // 更新当前类型的提示词
     prompts[promptType.value] = promptContent.value;
+    saveCurrentParamsToMemory(promptType.value);
 
     chrome.storage.sync.set(
       {
@@ -73,6 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
         apiKey: apiKey.value,
         model: model.value,
         prompts: prompts,
+        customParamsByType: customParamsByType,
       },
       () => {
         status.textContent = "设置已保存。";
@@ -104,6 +177,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // 收集当前模式的自定义参数（含未保存的输入）
+    saveCurrentParamsToMemory(promptType.value);
+    const extraParams = {};
+    for (const p of (customParamsByType[promptType.value] || [])) {
+      if (!p.name) continue;
+      try { extraParams[p.name] = JSON.parse(p.value); }
+      catch (_) { extraParams[p.name] = p.value; }
+    }
+
     const startTime = Date.now();
     try {
       const response = await fetch(endpoint, {
@@ -120,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ],
           temperature: 0.3,
           stream: true,
+          ...extraParams,
         }),
       });
 

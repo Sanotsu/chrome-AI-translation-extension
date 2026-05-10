@@ -135,6 +135,77 @@ button:hover {
   color: #333;
 }
 
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  padding: 6px 0;
+  color: #555;
+  font-size: 13px;
+}
+
+.collapse-arrow {
+  font-size: 11px;
+}
+
+.collapsible-body {
+  padding: 6px 0 4px 0;
+}
+
+.param-tips {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.param-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  align-items: center;
+}
+
+.param-row .param-name {
+  width: 28%;
+  margin-bottom: 0;
+}
+
+.param-row .param-value {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.delete-param-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete-param-btn:hover {
+  background: #c0392b;
+}
+
+.add-param-btn {
+  background: none;
+  color: #4a8af4;
+  border: 1px dashed #4a8af4;
+  border-radius: 4px;
+  padding: 3px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.add-param-btn:hover {
+  background: #f0f5ff;
+}
+
 #promptContent {
   /* width: 100%; */
   width: 96%;
