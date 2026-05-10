@@ -83,6 +83,90 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   });
 
+  // 测试 API 有效性与首字延迟
+  const testApiButton = document.getElementById("testApi");
+  const testResult = document.getElementById("testResult");
+
+  const TEST_TEXT =
+    `"Yeah, me too," said Michael and Ryan. We told Mrs. Roopy that, every day after school, me and Michael and Ryan ride our bikes together. I learned how to ride a two-wheeler in kindergarten. Now I can do a bunny hop off a bump, and I know the names of all the famous trick bike riders. I have posters of them all over the walls of my room.`;
+
+  testApiButton.addEventListener("click", async () => {
+    testResult.textContent = "测试中...";
+    testResult.style.color = "#666";
+
+    const endpoint = apiEndpoint.value.trim();
+    const key = apiKey.value.trim();
+    const modelName = model.value.trim();
+
+    if (!endpoint || !key || !modelName) {
+      testResult.textContent = "请先填写 API 地址、密钥和模型名称。";
+      testResult.style.color = "red";
+      return;
+    }
+
+    const startTime = Date.now();
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${key}`,
+        },
+        body: JSON.stringify({
+          model: modelName,
+          messages: [
+            { role: "system", content: "你是一个翻译助手。请将用户输入的文本翻译成中文，只返回翻译结果。" },
+            { role: "user", content: TEST_TEXT },
+          ],
+          temperature: 0.3,
+          stream: true,
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        testResult.textContent = `❌ 请求失败 (${response.status}): ${errText.slice(0, 120)}`;
+        testResult.style.color = "red";
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let firstTokenReceived = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          const data = line.slice(6).trim();
+          if (data === "[DONE]") break;
+          try {
+            const json = JSON.parse(data);
+            const content = json.choices?.[0]?.delta?.content;
+            if (content && !firstTokenReceived) {
+              firstTokenReceived = true;
+              const latency = Date.now() - startTime;
+              testResult.textContent = `✅ API 有效，首字延迟 ${latency} ms`;
+              testResult.style.color = "green";
+              reader.cancel();
+              return;
+            }
+          } catch (_) {}
+        }
+      }
+
+      if (!firstTokenReceived) {
+        testResult.textContent = "⚠️ 响应正常但未收到内容。";
+        testResult.style.color = "orange";
+      }
+    } catch (err) {
+      testResult.textContent = `❌ 连接失败: ${err.message}`;
+      testResult.style.color = "red";
+    }
+  });
+
   // 切换API密钥可见性
   toggleApiKey.addEventListener("click", () => {
     const type = apiKey.type;

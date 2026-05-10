@@ -36,6 +36,22 @@ button:hover {
   background-color: #45a049;
 }
 
+#testApi {
+  background-color: #4a8af4;
+  margin-right: 8px;
+}
+
+#testApi:hover {
+  background-color: #3a7ae4;
+}
+
+#testResult {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
 #status {
   margin-top: 10px;
   padding: 10px;
