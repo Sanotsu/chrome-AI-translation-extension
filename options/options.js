@@ -13,12 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const status = document.getElementById("status");
   const toggleApiKey = document.getElementById("toggleApiKey");
 
-  // --- 硬编码默认配置（删除此块可恢复空白默认值）---
-  const DEFAULT_API_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
-  const DEFAULT_API_KEY = "sk-3f99d3029ef04d49bce336903920029a";//临时api
-  const DEFAULT_MODEL = "deepseek-chat";
-  const DEFAULT_CONTEXT_PROMPT =
-    "Translate and analyze the text.\n- Give a clear translation.\n- Explain grammar or usage only when necessary.\n- Highlight useful expressions for English learning.\n- 用中文解释，减少开头的繁文缛节";
+  // --- 硬编码默认配置---
+  const DEFAULT_API_ENDPOINT = "";
+  const DEFAULT_API_KEY = "";
+  const DEFAULT_MODEL = "";
   // --- 硬编码默认配置结束 ---
 
   // 默认提示词
