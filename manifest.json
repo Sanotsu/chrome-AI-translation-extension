@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI 极简翻译助手",
-  "version": "1.0.20250714",
+  "version": "1.1.20260511",
   "description": "使用在线服务大模型的 API 进行智能网页翻译",
   "permissions": [
     "storage",
